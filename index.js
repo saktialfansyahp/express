@@ -11,6 +11,7 @@ import ColorRoute from "./routes/ColorRoute.js";
 import subCategoryRoute from "./routes/SubCategoryRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
 import { adminOnly } from "./middleware/AuthUser.js";
+import cors from "cors";
 
 const app = express();
 const PORT = 3000;
@@ -37,6 +38,14 @@ app.use(
   })
 );
 
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
+
+app.use(cors(corsConfig));
+app.options("*", cors(corsConfig));
+
 app.use(express.json());
 app.use("/", AuthRoute);
 app.use("/api", UserRoute);
@@ -44,7 +53,7 @@ app.use("/api/admin", adminOnly, RoleRoute);
 app.use("/api/admin", adminOnly, CategoryRoute);
 app.use("/api/admin", adminOnly, ColorRoute);
 app.use("/api/admin", adminOnly, subCategoryRoute);
-app.use("/api/admin", adminOnly, ProductRoute);
+app.use("/api", adminOnly, ProductRoute);
 app.use("/api", testRoutes);
 
 app.listen(PORT, () => console.log(`Server running on Port ${PORT}`));
